@@ -1,25 +1,31 @@
 "use strict";
 
+/*
+ * WARNING: code was refactored and tested minimally
+ * use with caution and report errors.
+ */
+
 function charIsDigit(charCode) {
+    var okay = false;
     charCode = parseInt(charCode);
     if (charCode >= 48 && charCode <= 57) {
-        return true;
-    } else {
-        return false;
+        okay = true;
     }
+    return okay;
 }
 
 function charIsAlpha(charCode) {
+    var okay = false;
     charCode = parseInt(charCode);
     if ((charCode >= 65 && charCode <= 90) ||
             charCode >= 97 && charCode <= 122) {
-        return true;
-    } else {
-        return false;
+        okay = true;
     }
+    return okay;
 }
 
 function specialKey(keyCode, crlf) {
+    var okay = false;
     keyCode = parseInt(keyCode);
     var ctrlChars = [
         8, /*backspace*/
@@ -52,13 +58,10 @@ function specialKey(keyCode, crlf) {
     //console.log('special char: ' + keyCode);
     //console.log(ctrlChars.indexOf(keyCode));
     var ret = ctrlChars.indexOf(keyCode);
-    if (ret === -1) {
-        //console.log('did not find special');
-        return false;
-    } else {
-        //console.log('found special');
-        return true;
+    if (ret != -1) {
+        okay = true;
     }
+    return okay;
 }
 
 function charIsBracket(charCode) {
@@ -73,11 +76,11 @@ function charIsBracket(charCode) {
 }
 
 function equalStringNocaseNoempty(str1, str2) {
-    if ((str1 !== str2) || (str1.length + str2.length === 0)) {
-        return false;
-    } else {
-        return true;
+    var okay = false;
+    if ((str1 === str2) && (str1.length + str2.length != 0)) {
+        okay = true;
     }
+    return okay;
 }
 
 function validMoney(str) {
@@ -154,30 +157,32 @@ function validDollarAmount(str) {
 }
 
 function numBetween(num, n1, n2, inclusive) {
+    var okay = false;
     if (inclusive) {
         if ((num >= n1 && num <= n2) || (num >= n2 && num <= n1)) {
-            return true;
+            okay = true;
         }
     } else {
         if ((num > n1 && num < n2) || (num > n2 && num < n1)) {
-            return true;
+            okay = true;
         }
-        return false;
     }
+    return okay;
 }
 
 function validDateTime(dateTime) {
+    var okay = false;
     var validDateTime = new Date(dateTime);
 
     //console.log(validDateTime.getTime());
     if (validDateTime.getTime()) {
-        return true;
-    } else {
-        return false;
+        okay = true;
     }
+    return false;
 }
 
 function isFutureDateTime(futureDateTime, offsetDays) {
+    var okay = false;
     var now = new Date();
     now.setDate(now.getDate() + offsetDays);
 
@@ -185,22 +190,21 @@ function isFutureDateTime(futureDateTime, offsetDays) {
 
     //console.log(validDateTime.getTime());
     if (futureDateTime.getTime() > now.getTime()) {
-        return true;
-    } else {
-        return false;
+        var okay = true;
     }
+    return okay;
 }
 
 function isPastDateTime(pastDateTime) {
+    var okay = false;
     var now = new Date();
     var pastDateTime = new Date(pastDateTime);
 
     //console.log(validDateTime.getTime());
     if (pastDateTime.getTime() < now.getTime()) {
-        return true;
-    } else {
-        return false;
+            var okay = true;
     }
+    return okay;
 }
 
 function validDateFormat(date) {
@@ -214,8 +218,12 @@ function validDateFormat(date) {
 }
 
 function validDate(mo, da, yr) {
+    /*
+     * this needs to be refactored to flip the default okay
+     */
     //alert(mo + "/" + da + "/" + yr);
-
+    var okay = true;
+    
     switch (mo) {
         case 1:
         case 3:
@@ -226,7 +234,7 @@ function validDate(mo, da, yr) {
         case 12:
             //alert("31 days " + mo);
             if (!numBetween(da, 1, 31, 1))
-                return false;
+                okay = false;
             break;
 
         case 4:
@@ -235,7 +243,7 @@ function validDate(mo, da, yr) {
         case 11:
             //alert("30 days " + mo);
             if (!numBetween(da, 1, 30, 1))
-                return false;
+                okay = false;
             break;
 
         case 2:
@@ -250,12 +258,12 @@ function validDate(mo, da, yr) {
             else
                 feb = 29;
             if (!numBetween(da, 1, feb, 1))
-                return false;
+                okay = false;
             break;
         default:
-            return false;
+            okay = false;
     }
-    return true;
+    return okay;
 }
 
 function validName(name) {
@@ -291,7 +299,8 @@ function validToken(name) {
 }
 
 function validTokenStr(string) {
-
+    // untested function, use with caution
+    
     var result = false;
 
     if (string.length >= 2) {
@@ -299,15 +308,12 @@ function validTokenStr(string) {
         var re = /^([a-z0-9]+[-])*[a-z0-9]+$/i;
         var tokenArray = string.split(":");
 
-        for (i = 0; i < tokenArray.length; ++i) {
+        var result = re.test(tokenArray[0]); // priming read
+        for (i = 1; result && i < tokenArray.length; ++i) {
             result = re.test(tokenArray[i]);
             //console.log(tokenArray[i] + ' : ' + result);
-            if (!result) {
-                break;
-            }
         }
     }
-
     return result;
 }
 

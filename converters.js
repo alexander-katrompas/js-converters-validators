@@ -78,6 +78,7 @@ function cleanMoney(string) {
      * and removes leading zeros
      * returns string, not float
      */
+    var clean_money = '0.00';
     var money = string.trim().replace(/[^0-9.]/g, '').replace(/^0+/, '');
     //converts to exactly 2 decimal points
     money = parseFloat(money) * 100;
@@ -86,10 +87,9 @@ function cleanMoney(string) {
     money = money.toFixed(2);
     //tests for $0.00
     if (/^[0-9]+\.[0-9]{0,2}$/.test(money)) {
-        return money;
-    } else {
-        return '0.00';
+        clean_final = money;
     }
+    return clean_final;
 }
 
 function removeQueryURLParameters(url) {
